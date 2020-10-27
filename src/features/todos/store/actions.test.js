@@ -77,12 +77,8 @@ describe("test async actions", () => {
 
     saveTodos.mockRejectedValueOnce(error);
 
-    try {
-      await store.dispatch(tryAddTodoAction(todo));
-    } catch (e) {
-      expect(saveTodos).toHaveBeenCalled();
-      expect(saveTodos).toThrowError(error);
-      expect(store.getActions()[0]).toEqual(action);
-    }
+    await store.dispatch(tryAddTodoAction(todo));
+    expect(saveTodos).toHaveBeenCalled();
+    expect(store.getActions()[0]).toEqual(action);
   });
 });
