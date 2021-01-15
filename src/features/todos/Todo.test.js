@@ -1,27 +1,27 @@
-import { Route } from "react-router-dom";
-import Todos from "./";
-import { WithReduxAndRouter } from "../../config/test.helpers";
-import React from "react";
+import { Route } from 'react-router-dom';
+import Todos from './';
+import { WithReduxAndRouter } from '../../config/test.helpers';
+import React from 'react';
 import {
   render,
   fireEvent,
   waitFor,
   cleanup,
   findByText,
-} from "@testing-library/react";
-import apiFirebaseMock, { saveTodos } from "../../config/api.firebase";
+} from '@testing-library/react';
+import apiFirebaseMock, { saveTodos } from '../../config/api.firebase';
 
-jest.mock("../../config/api.firebase");
+jest.mock('../../config/api.firebase');
 
-describe("<Todo />", () => {
+describe('<Todo />', () => {
   afterEach(cleanup);
-  test("should add a todo", async () => {
+  test('should add a todo', async () => {
     apiFirebaseMock.get.mockResolvedValueOnce({ data: [] });
     const { getByPlaceholderText, getByText, getByDisplayValue } = render(
       <Route path="/todos/:filter" component={Todos} />,
       {
         wrapper: ({ children }) => (
-          <WithReduxAndRouter path={["/todos/all"]}>
+          <WithReduxAndRouter path={['/todos/all']}>
             {children}
           </WithReduxAndRouter>
         ),
@@ -29,7 +29,7 @@ describe("<Todo />", () => {
     );
 
     fireEvent.change(getByPlaceholderText(/ajouter/i), {
-      target: { value: "test todo" },
+      target: { value: 'test todo' },
     });
     expect(getByDisplayValue(/test todo/i)).toBeInTheDocument();
     fireEvent.click(getByText(/ajouter$/i));
@@ -37,9 +37,9 @@ describe("<Todo />", () => {
     await waitFor(() => expect(getByText(/test todo/)).toBeInTheDocument());
   });
 
-  test("should edit a todo", async () => {
+  test('should edit a todo', async () => {
     apiFirebaseMock.get.mockResolvedValueOnce({
-      data: [{ name: "test todo", done: false }],
+      data: [{ name: 'test todo', done: false }],
     });
     const {
       getByPlaceholderText,
@@ -48,7 +48,7 @@ describe("<Todo />", () => {
       findByText,
     } = render(<Route path="/todos/:filter" component={Todos} />, {
       wrapper: ({ children }) => (
-        <WithReduxAndRouter path={["/todos/all"]}>
+        <WithReduxAndRouter path={['/todos/all']}>
           {children}
         </WithReduxAndRouter>
       ),
@@ -58,13 +58,13 @@ describe("<Todo />", () => {
     fireEvent.click(getByText(/edit/i));
     expect(getByDisplayValue(/test todo/)).toBeInTheDocument();
     fireEvent.change(getByDisplayValue(/test todo/), {
-      target: { value: "update todo" },
+      target: { value: 'update todo' },
     });
     await waitFor(() =>
       expect(getByDisplayValue(/update todo/)).toBeInTheDocument()
     );
     fireEvent.click(getByText(/save/i));
-    expect(saveTodos).toHaveBeenCalled();
     await findByText(/update todo/);
+    expect(saveTodos).toHaveBeenCalled();
   });
 });
